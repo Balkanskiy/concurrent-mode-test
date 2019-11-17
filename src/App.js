@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Suspense} from 'react';
 import './App.css';
+import {unstable_createResource as createResource} from "react-cache";
+import axios from "axios";
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+const fetcher = createResource(async path => {
+  const [todos] = await Promise.all([
+    axios.get(path).then(resp => resp.data),
+    sleep(1000)
+  ]);
+  return todos;
+});
+
+class AsyncComponent extends React.Component {
+  render() {
+    const todos = fetcher.read("https://jsonplaceholder.typicode.com/todos");
+    return (
+        <div>
+          <h1>Todos</h1>
+          <div className="todos">
+            {todos.map(todo => (
+                <div
+                    key={todo.id}
+                >
+                  {todo.title}
+                </div>
+            ))}
+          </div>
+        </div>
+    );
+  }
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="App">
+        <Suspense fallback={<Loading />}>
+          <AsyncComponent />
+        </Suspense>
+      </div>
   );
 }
+
+function Loading(props) {
+  return <div>Loading...</div>;
+}
+
 
 export default App;
