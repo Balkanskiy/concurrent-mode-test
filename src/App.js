@@ -5,28 +5,26 @@ import axios from "axios";
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-const fetcher = createResource(async path => {
+const fetchTodos = createResource(async path => {
   const [todos] = await Promise.all([
     axios.get(path).then(resp => resp.data),
-    sleep(1000)
+    sleep(3000)
   ]);
   return todos;
 });
 
-class AsyncComponent extends React.Component {
-  render() {
-    const todos = fetcher.read("https://jsonplaceholder.typicode.com/todos");
-    return (
-      <div>
-        <h1>Todos</h1>
-        <div className="todos">
-          {todos.map(todo => (
-            <div key={todo.id}>{todo.title}</div>
-          ))}
-        </div>
+function AsyncComponent() {
+  const todos = fetchTodos.read("https://jsonplaceholder.typicode.com/todos");
+  return (
+    <div>
+      <h1>Todos</h1>
+      <div className="todos">
+        {todos.map(todo => (
+          <div key={todo.id}>{todo.title}</div>
+        ))}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 function App() {
@@ -39,7 +37,7 @@ function App() {
   );
 }
 
-function Loading(props) {
+function Loading() {
   return <div>Loading...</div>;
 }
 
