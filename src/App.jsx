@@ -1,13 +1,11 @@
-import React, { Suspense } from "react";
+import React from "react";
 import "./App.css";
 import Search from "./components/Search";
 
 function App() {
   return (
     <div className="App">
-      <Suspense fallback={<div>Loading</div>}>
-        <Search />
-      </Suspense>
+      <Search />
     </div>
   );
 }
