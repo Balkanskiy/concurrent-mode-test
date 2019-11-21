@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Input from "@material-ui/core/Input";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+
+import InputAdornment from "@material-ui/core/InputAdornment";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Results from "../Results";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -28,15 +29,22 @@ const useStyles = makeStyles(theme => ({
   results: {}
 }));
 
+let updateQueryTimeout = null;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-const fetchTodos = async () => {
-  const [todos] = await Promise.all([
+const fetchTodos = async query => {
+  const [posts] = await Promise.all([
     axios
       .get("https://jsonplaceholder.typicode.com/posts")
-      .then(resp => resp.data),
+      .then(resp => filterPosts(resp.data, query)),
     sleep(3000)
   ]);
-  return todos;
+  return posts;
+};
+
+const filterPosts = (posts, query) => {
+  return posts.filter(post =>
+    post.title.toLowerCase().includes(query.toLowerCase())
+  );
 };
 
 function Search() {
@@ -61,8 +69,20 @@ function Search() {
     }
   };
 
+  const debouncedSearch = searchQuery => {
+    if (updateQueryTimeout) {
+      clearTimeout(updateQueryTimeout);
+    }
+
+    updateQueryTimeout = setTimeout(() => {
+      getPosts(searchQuery);
+    }, 250);
+  };
+
   useEffect(() => {
-    getPosts(query);
+    if (query) {
+      debouncedSearch(query);
+    }
   }, [query]);
 
   return (
@@ -77,21 +97,13 @@ function Search() {
           value={query}
           margin="normal"
           onChange={handleQueryChange}
+          endAdornment={
+            <InputAdornment position="end">
+              {isLoading && <CircularProgress color="black" size={12} />}
+            </InputAdornment>
+          }
         />
-        {query &&
-          (isLoading ? (
-            <div>loading</div>
-          ) : (
-            <List component="nav" aria-label="main mailbox folders">
-              {posts.map(post => {
-                return (
-                  <ListItem button key={post.id}>
-                    <ListItemText primary={post.title} secondary={post.body} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          ))}
+        {query && <Results posts={posts} />}
       </div>
     </div>
   );
