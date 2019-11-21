@@ -5,7 +5,7 @@ export default makeStyles(theme => ({
     width: "100%",
     display: "flex",
     justifyContent: "center",
-    padding: "72px"
+    padding: "72px 0"
   },
   search: {
     width: "100%",
