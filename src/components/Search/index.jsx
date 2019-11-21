@@ -1,51 +1,12 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Input from "@material-ui/core/Input";
-
 import InputAdornment from "@material-ui/core/InputAdornment";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Results from "../Results";
-
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles(theme => ({
-  container: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    padding: "72px"
-  },
-  search: {
-    width: "100%",
-    maxWidth: "360px",
-    display: "flex",
-    justifyContent: "flexStart",
-    alignItems: "flexStart",
-    flexFlow: "column nowrap"
-  },
-  input: {
-    width: "100%"
-  },
-  results: {}
-}));
+import useStyles from "./styles";
+import fetchPosts from "./getPosts";
 
 let updateQueryTimeout = null;
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-const fetchTodos = async query => {
-  const [posts] = await Promise.all([
-    axios
-      .get("https://jsonplaceholder.typicode.com/posts")
-      .then(resp => filterPosts(resp.data, query)),
-    sleep(3000)
-  ]);
-  return posts;
-};
-
-const filterPosts = (posts, query) => {
-  return posts.filter(post =>
-    post.title.toLowerCase().includes(query.toLowerCase())
-  );
-};
 
 function Search() {
   const [posts, setPosts] = useState([]);
@@ -53,14 +14,12 @@ function Search() {
   const [isLoading, setIsLoading] = useState(false);
   const styles = useStyles();
 
-  const handleQueryChange = event => {
-    setQuery(event.target.value);
-  };
+  const handleQueryChange = event => setQuery(event.target.value);
 
-  const getPosts = async query => {
+  const search = async query => {
     setIsLoading(true);
     try {
-      const data = await fetchTodos(query);
+      const data = await fetchPosts(query);
       setPosts(data);
     } catch (e) {
       console.error("fetch error");
@@ -75,8 +34,8 @@ function Search() {
     }
 
     updateQueryTimeout = setTimeout(() => {
-      getPosts(searchQuery);
-    }, 250);
+      search(searchQuery);
+    }, 300);
   };
 
   useEffect(() => {
@@ -91,9 +50,7 @@ function Search() {
         <Input
           className={styles.input}
           label="Search"
-          inputProps={{
-            "aria-label": "description"
-          }}
+          inputProps={{ "aria-label": "description" }}
           value={query}
           margin="normal"
           onChange={handleQueryChange}
