@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Input from "@material-ui/core/Input";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Results from "../Results";
-import useStyles from "./styles";
-import fetchPosts from "./getPosts";
+import useStyles from "../../common/styles";
+import { sleep, filterPosts } from "../../common/getPosts";
 
 let updateQueryTimeout = null;
+
+const fetchPosts = async query => {
+  const [posts] = await Promise.all([
+    axios
+      .get("https://jsonplaceholder.typicode.com/posts")
+      .then(resp => filterPosts(resp.data, query)),
+    sleep(3000)
+  ]);
+  return posts;
+};
 
 function Search() {
   const [posts, setPosts] = useState([]);
@@ -54,13 +64,14 @@ function Search() {
           value={query}
           margin="normal"
           onChange={handleQueryChange}
-          endAdornment={
-            <InputAdornment position="end">
-              {isLoading && <CircularProgress color="black" size={12} />}
-            </InputAdornment>
-          }
         />
-        {query && <Results posts={posts} />}
+        {query && isLoading ? (
+          <div className={styles.loading}>
+            <CircularProgress color="primary" />
+          </div>
+        ) : (
+          <Results posts={posts} />
+        )}
       </div>
     </div>
   );
