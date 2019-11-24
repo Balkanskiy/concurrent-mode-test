@@ -7,21 +7,18 @@ import { unstable_createResource as createResource } from "react-cache";
 import { sleep, filterPosts } from "../../common/getPosts";
 
 const fetchPosts = createResource(async query => {
+  const url = query
+    ? "https://jsonplaceholder.typicode.com/posts?userId=1"
+    : "https://jsonplaceholder.typicode.com/posts";
   const [posts] = await Promise.all([
-    axios
-      .get("https://jsonplaceholder.typicode.com/posts")
-      .then(resp => filterPosts(resp.data, query)),
-    sleep(3000)
+    axios.get(url).then(resp => resp.data),
+    sleep(5000)
   ]);
   return posts;
 });
 
 function Results({ query }) {
   const posts = fetchPosts.read(query);
-
-  if (posts.length < 0) {
-    return <div>couldn't find results for {query}</div>;
-  }
   return (
     <List component="nav" aria-label="main mailbox folders">
       {posts.map(post => (

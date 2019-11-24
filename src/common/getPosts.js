@@ -1,8 +1,10 @@
 export const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 export const filterPosts = (posts, query) => {
-  return posts.filter(post =>
+  const filteredPosts = posts.filter(post =>
     post.title.toLowerCase().includes(query.toLowerCase())
   );
+
+  return filteredPosts;
 };
 
 // export const filterPosts = (posts, query) =>
