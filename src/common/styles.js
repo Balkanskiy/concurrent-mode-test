@@ -17,5 +17,12 @@ export default makeStyles(theme => ({
   },
   input: {
     width: "100%"
+  },
+  loading: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    padding: "32px",
+    boxSizing: "border-box"
   }
 }));
