@@ -1,14 +1,21 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, useTransition, Suspense } from "react";
 import Input from "@material-ui/core/Input";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Results from "../CMResults";
 import useStyles from "../../common/styles";
 
-function Search() {
+const Search = () => {
   const [query, setQuery] = useState("");
   const styles = useStyles();
+  const [startTransition, isPending] = useTransition({
+    timeoutMs: 3000
+  });
 
-  const handleQueryChange = event => setQuery(event.target.value);
+  const handleQueryChange = event => {
+    startTransition(() => {
+      setQuery(event.target.value);
+    });
+  };
 
   return (
     <div className={styles.container}>
@@ -18,15 +25,15 @@ function Search() {
           label="Search"
           inputProps={{ "aria-label": "description" }}
           value={query}
-          margin="normal"
           onChange={handleQueryChange}
         />
+        {isPending ? " Loading..." : null}
         <Suspense fallback={<CircularProgress color="primary" />}>
-          <Results />
+          <Results query={query} />
         </Suspense>
       </div>
     </div>
   );
-}
+};
 
 export default Search;
