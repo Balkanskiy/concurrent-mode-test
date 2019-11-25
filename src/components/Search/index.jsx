@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Input from "@material-ui/core/Input";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Results from "../Results";
-import useStyles from "../../common/styles";
 import axios from "axios";
+import Input from "@material-ui/core/Input";
+import Results from "../Results";
+import Loading from "../Loading";
+import useStyles from "../../common/styles";
 
 let updateQueryTimeout = null;
 
@@ -54,13 +54,7 @@ function Search() {
           onChange={handleQueryChange}
         />
         {query &&
-          (isLoading ? (
-            <div className={styles.loading}>
-              <CircularProgress color="primary" />
-            </div>
-          ) : (
-            <Results posts={posts} query={query} />
-          ))}
+          (isLoading ? <Loading /> : <Results posts={posts} query={query} />)}
       </div>
     </div>
   );
