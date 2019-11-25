@@ -2,10 +2,18 @@ import React from "react";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import Paper from "@material-ui/core/Paper";
+import useStyles from "../../common/styles";
 
 function Results({ posts, query }) {
-  if (posts.length < 0) {
-    return <div>couldn't find results for {query}</div>;
+  const styles = useStyles();
+
+  if (posts.length === 0) {
+    return (
+      <Paper className={styles.noResults}>
+        <div>couldn't find results for {query}</div>
+      </Paper>
+    );
   }
   return (
     <List component="nav" aria-label="main mailbox folders">

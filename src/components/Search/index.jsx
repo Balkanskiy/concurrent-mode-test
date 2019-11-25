@@ -16,14 +16,11 @@ function Search() {
   const handleQueryChange = event => setQuery(event.target.value);
 
   const search = async query => {
-    setIsLoading(true);
     try {
       const { data } = await axios.get(`/posts/data.json?q=${query}`);
       setPosts(data);
     } catch (e) {
       console.error("fetch error");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -32,9 +29,11 @@ function Search() {
       clearTimeout(updateQueryTimeout);
     }
 
-    updateQueryTimeout = setTimeout(() => {
+    setIsLoading(true);
+    updateQueryTimeout = setTimeout(async () => {
       console.count();
-      search(searchQuery);
+      await search(searchQuery);
+      setIsLoading(false);
     }, 1000);
   };
 
@@ -52,7 +51,6 @@ function Search() {
           label="Search"
           inputProps={{ "aria-label": "description" }}
           value={query}
-          margin="normal"
           onChange={handleQueryChange}
         />
         {query &&
@@ -61,7 +59,7 @@ function Search() {
               <CircularProgress color="primary" />
             </div>
           ) : (
-            <Results posts={posts} />
+            <Results posts={posts} query={query} />
           ))}
       </div>
     </div>

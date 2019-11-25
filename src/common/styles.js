@@ -24,5 +24,9 @@ export default makeStyles(theme => ({
     justifyContent: "center",
     padding: "32px",
     boxSizing: "border-box"
+  },
+  noResults: {
+    marginTop: "16px",
+    padding: "32px"
   }
 }));
