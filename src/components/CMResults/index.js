@@ -4,32 +4,24 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { unstable_createResource as createResource } from "react-cache";
-import {
-  sleep,
-  getUrl,
-  filterPosts,
-  asyncFilterPosts
-} from "../../common/getPosts";
+import Paper from "@material-ui/core/Paper";
+import useStyles from "../../common/styles";
 
-const fetchPosts = createResource(async query => {
-  const url = getUrl(false);
-  const [posts] = await Promise.all([
-    axios
-      .get(url)
-      .then(resp => asyncFilterPosts(resp.data, query))
-      .then(resp => {
-        console.log("resp", resp);
-        return resp;
-      }),
-    sleep(2000)
-  ]);
-  return posts;
+const postsResource = createResource(async query => {
+  const { data } = await axios.get(`/posts/data.json?q=${query}`);
+  return data;
 });
 
 function Results({ query }) {
-  const posts = fetchPosts.read(query);
+  const posts = postsResource.read(query);
+  const styles = useStyles();
+
   if (posts.length === 0) {
-    return <div>couldn't find results for {query}</div>;
+    return (
+      <Paper className={styles.noResults}>
+        <div>couldn't find results for {query}</div>
+      </Paper>
+    );
   }
   return (
     <List component="nav" aria-label="main mailbox folders">

@@ -1,14 +1,16 @@
 import React, { useState, useTransition, Suspense } from "react";
 import Input from "@material-ui/core/Input";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import Results from "../CMResults";
 import useStyles from "../../common/styles";
+import Loading from "../Loading";
 
 const Search = () => {
   const [query, setQuery] = useState("");
   const styles = useStyles();
   const [startTransition, isPending] = useTransition({
-    timeoutMs: 1000
+    timeoutMs: 3000
   });
 
   const handleQueryChange = event => {
@@ -26,10 +28,14 @@ const Search = () => {
           inputProps={{ "aria-label": "description" }}
           value={query}
           onChange={handleQueryChange}
+          endAdornment={
+            <InputAdornment position="end">
+              {isPending && <CircularProgress color="black" size={12} />}
+            </InputAdornment>
+          }
         />
-        {isPending ? " Loading..." : null}
         {query && (
-          <Suspense fallback={<CircularProgress color="primary" />}>
+          <Suspense fallback={<Loading />}>
             <Results query={query} />
           </Suspense>
         )}
