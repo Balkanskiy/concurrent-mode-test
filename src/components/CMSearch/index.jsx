@@ -8,7 +8,7 @@ const Search = () => {
   const [query, setQuery] = useState("");
   const styles = useStyles();
   const [startTransition, isPending] = useTransition({
-    timeoutMs: 3000
+    timeoutMs: 1000
   });
 
   const handleQueryChange = event => {
@@ -28,9 +28,11 @@ const Search = () => {
           onChange={handleQueryChange}
         />
         {isPending ? " Loading..." : null}
-        <Suspense fallback={<CircularProgress color="primary" />}>
-          <Results query={query} />
-        </Suspense>
+        {query && (
+          <Suspense fallback={<CircularProgress color="primary" />}>
+            <Results query={query} />
+          </Suspense>
+        )}
       </div>
     </div>
   );
