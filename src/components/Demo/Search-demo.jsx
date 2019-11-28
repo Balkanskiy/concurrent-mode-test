@@ -1,7 +1,7 @@
 import React, { useState, useTransition, Suspense } from "react";
 import axios from "axios";
 import Input from "@material-ui/core/Input";
-import Results from "../CMResults";
+import Results from "./Results-demo";
 import Loading from "../Loading";
 import useStyles from "../../common/styles";
 import { unstable_createResource as createResource } from "react-cache";

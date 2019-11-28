@@ -5,9 +5,9 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Paper from "@material-ui/core/Paper";
 import useStyles from "../../common/styles";
 
-function Results({ resource }) {
+function Results({ resource, isStale }) {
   const styles = useStyles();
-  const posts = resource.read();
+  const posts = resource.read() || [];
 
   if (posts.length === 0) {
     return (
@@ -18,7 +18,11 @@ function Results({ resource }) {
   }
 
   return (
-    <List component="nav" aria-label="main mailbox folders">
+    <List
+      component="nav"
+      aria-label="main mailbox folders"
+      className={isStale && styles.stale}
+    >
       {posts.map(post => (
         <ListItem button key={post.id}>
           <ListItemText primary={post.title} secondary={post.body} />

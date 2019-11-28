@@ -4,42 +4,36 @@ import Input from "@material-ui/core/Input";
 import Results from "../Results";
 import Loading from "../Loading";
 import useStyles from "../../common/styles";
+import debounce from "awesome-debounce-promise";
 
-let updateQueryTimeout = null;
+const search = async query => await axios.get(`/posts/data.json?q=${query}`);
+const debouncedSearch = debounce(search, 500);
 
 function Search() {
   const [posts, setPosts] = useState([]);
   const [query, setQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const styles = useStyles();
 
-  const handleQueryChange = event => setQuery(event.target.value);
-
-  const search = async query => {
+  const searchPosts = async () => {
     try {
-      const { data } = await axios.get(`/posts/data.json?q=${query}`);
+      setIsLoading(true);
+      const { data } = await debouncedSearch(query);
       setPosts(data);
+      setIsLoading(false);
     } catch (e) {
       console.error("fetch error");
+    } finally {
     }
   };
 
-  const debouncedSearch = searchQuery => {
-    if (updateQueryTimeout) {
-      clearTimeout(updateQueryTimeout);
-    }
-
-    setIsLoading(true);
-    updateQueryTimeout = setTimeout(async () => {
-      console.count();
-      await search(searchQuery);
-      setIsLoading(false);
-    }, 1000);
+  const handleQueryChange = event => {
+    setQuery(event.target.value);
   };
 
   useEffect(() => {
     if (query) {
-      debouncedSearch(query);
+      searchPosts();
     }
   }, [query]);
 

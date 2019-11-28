@@ -8,11 +8,14 @@ const port = 9000;
 app.use(cors());
 app.get("/posts/data.json", (request, response) => {
   setTimeout(() => {
-    const filteredData = data.filter(post =>
-      post.title.toLowerCase().includes(request.query.q.toLowerCase())
-    );
+    const searchQuery = request.query.q;
+    const filteredData = searchQuery
+      ? data.filter(post =>
+          post.title.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : [];
     response.send(filteredData);
-  }, 3000);
+  }, 1000);
 });
 
 app.listen(port, err => {

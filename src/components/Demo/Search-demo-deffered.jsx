@@ -1,20 +1,21 @@
-import React, { useState, useTransition, Suspense } from "react";
+import React, {
+  useState,
+  useTransition,
+  Suspense,
+  useDeferredValue
+} from "react";
 import axios from "axios";
 import Input from "@material-ui/core/Input";
-import Results from "../CMResults";
+import Results from "./Results-demo";
 import Loading from "../Loading";
 import useStyles from "../../common/styles";
 import { unstable_createResource as createResource } from "react-cache";
 import InputLoading from "../InputLoading";
-import debounce from "awesome-debounce-promise";
-
-const search = async query => await axios.get(`/posts/data.json?q=${query}`);
-const debouncedSearch = debounce(search, 500);
 
 const fetchPosts = query =>
   createResource(async () => {
     if (query) {
-      const { data } = await debouncedSearch(query);
+      const { data } = await axios.get(`/posts/data.json?q=${query}`);
       return data;
     }
   });
@@ -25,6 +26,9 @@ function Search() {
   const [resource, setResource] = useState(fetchPosts());
   // Wait 3 seconds before fallback
   const [startTransition, isPending] = useTransition({ timeoutMs: 3000 });
+  const deferredResource = useDeferredValue(resource, {
+    timeoutMs: 5000
+  });
 
   const handleQueryChange = event => {
     setQuery(event.target.value);
@@ -46,7 +50,10 @@ function Search() {
         />
         {query && (
           <Suspense fallback={<Loading />}>
-            <Results resource={resource} />
+            <Results
+              resource={deferredResource}
+              isStale={deferredResource !== resource}
+            />
           </Suspense>
         )}
       </div>
