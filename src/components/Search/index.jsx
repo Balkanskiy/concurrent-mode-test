@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import debounce from "awesome-debounce-promise";
 import Input from "@material-ui/core/Input";
 import Results from "../Results";
 import Loading from "../Loading";
-import useStyles from "../../common/styles";
-import debounce from "awesome-debounce-promise";
+import useStyles from "../styles";
 
 const search = async query => await axios.get(`/posts/data.json?q=${query}`);
 const debouncedSearch = debounce(search, 500);

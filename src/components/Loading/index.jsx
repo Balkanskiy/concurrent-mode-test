@@ -1,6 +1,6 @@
-import CircularProgress from "@material-ui/core/CircularProgress";
 import React from "react";
-import useStyles from "../../common/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import useStyles from "../styles";
 
 const Loading = () => {
   const styles = useStyles();
