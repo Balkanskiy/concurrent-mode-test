@@ -23,13 +23,10 @@ function Search() {
       setIsLoading(false);
     } catch (e) {
       console.error("fetch error");
-    } finally {
     }
   };
 
-  const handleQueryChange = event => {
-    setQuery(event.target.value);
-  };
+  const handleQueryChange = event => setQuery(event.target.value);
 
   useEffect(() => {
     if (query) {
