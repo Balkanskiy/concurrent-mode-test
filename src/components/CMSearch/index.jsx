@@ -8,14 +8,16 @@ import useStyles from "../styles";
 import InputLoading from "../InputLoading";
 import debounce from "awesome-debounce-promise";
 
-const search = async query => await axios.get(`/posts/data.json?q=${query}`);
+const search = async query => {
+  const response = await fetch(`/posts/data.json?q=${query}`);
+  return await response.json();
+};
 const debouncedSearch = debounce(search, 500);
 
 const fetchPosts = query =>
   createResource(async () => {
     if (query) {
-      const { data } = await debouncedSearch(query);
-      return data;
+      return await debouncedSearch(query);
     }
   });
 
