@@ -17,10 +17,10 @@ function Search() {
   const [isLoading, setIsLoading] = useState(true);
   const styles = useStyles();
 
-  const searchPosts = async () => {
+  const searchPosts = async searchQuery => {
     try {
       setIsLoading(true);
-      const posts = await debouncedSearch(query);
+      const posts = await debouncedSearch(searchQuery);
       setPosts(posts);
       setIsLoading(false);
     } catch (e) {
@@ -28,13 +28,13 @@ function Search() {
     }
   };
 
-  const handleQueryChange = event => setQuery(event.target.value);
-
-  useEffect(() => {
-    if (query) {
-      searchPosts();
+  const handleQueryChange = event => {
+    const searchQuery = event.target.value;
+    setQuery(searchQuery);
+    if (searchQuery) {
+      searchPosts(searchQuery);
     }
-  }, [query]);
+  };
 
   return (
     <div className={styles.container}>
