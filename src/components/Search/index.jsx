@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import debounce from "awesome-debounce-promise";
 import Input from "@material-ui/core/Input";
 import Results from "../Results";
 import Loading from "../Loading";
 import useStyles from "../styles";
 
-const search = async query => await axios.get(`/posts/data.json?q=${query}`);
+const search = async query => {
+  const response = await fetch(`/posts/data.json?q=${query}`);
+  return await response.json();
+};
 const debouncedSearch = debounce(search, 500);
 
 function Search() {
@@ -18,8 +20,8 @@ function Search() {
   const searchPosts = async () => {
     try {
       setIsLoading(true);
-      const { data } = await debouncedSearch(query);
-      setPosts(data);
+      const posts = await debouncedSearch(query);
+      setPosts(posts);
       setIsLoading(false);
     } catch (e) {
       console.error("fetch error");
