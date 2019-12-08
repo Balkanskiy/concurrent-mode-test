@@ -1,15 +1,11 @@
 import React, { Suspense } from "react";
-import axios from "axios";
 import cn from "classnames";
 import { unstable_createResource as createResource } from "react-cache";
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const fetcher = createResource(async path => {
-  const [todos] = await Promise.all([
-    axios.get(path).then(resp => resp.data),
-    sleep(1000)
-  ]);
+  const [todos] = await Promise.all([sleep(1000)]);
   return todos;
 });
 
