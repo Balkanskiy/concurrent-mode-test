@@ -18,13 +18,14 @@ function Search() {
   const styles = useStyles();
 
   const searchPosts = async searchQuery => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const posts = await debouncedSearch(searchQuery);
       setPosts(posts);
-      setIsLoading(false);
     } catch (e) {
       console.error("fetch error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
