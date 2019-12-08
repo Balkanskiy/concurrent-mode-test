@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import debounce from "awesome-debounce-promise";
 import Input from "@material-ui/core/Input";
 import Results from "../Results";
