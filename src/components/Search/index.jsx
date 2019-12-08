@@ -14,7 +14,7 @@ const debouncedSearch = debounce(search, 500);
 function Search() {
   const [posts, setPosts] = useState([]);
   const [query, setQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const styles = useStyles();
 
   const searchPosts = async searchQuery => {
