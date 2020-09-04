@@ -11,7 +11,7 @@
     "eslint-plugin-prettier": "^3.1.1",
     "express": "^4.17.1",
     "prettier": "^1.19.1",
-    "react": "0.0.0-experimental-b53ea6ca0",
+    "react": "0.14.0",
     "react-cache": "2.0.0-alpha.1",
     "react-dom": "0.0.0-experimental-b53ea6ca0",
     "react-scripts": "2.1.1"
